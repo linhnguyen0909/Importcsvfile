@@ -4,7 +4,9 @@
 namespace App\Services;
 
 
+use Exception;
 use Illuminate\Support\Facades\Validator;
+use function PHPUnit\Framework\throwException;
 
 class CsvFileService extends FileService
 {
@@ -25,28 +27,45 @@ class CsvFileService extends FileService
         // get header row
         $key = array_values(array_shift($array));
         // transform data with header
+        $attributes = [];
         foreach ($array as $row){
             $attributes[] = array_combine($key,$row);
         }
         return $attributes;
     }
-    public function validate (array $data):string {
+    public function validate (array $row):array {
         $rules = [
             'name' => 'required|min:4|max:50',
             'email' => 'required|email',
             'password' => 'required|min:8',
             'phone' => 'nullable|integer'
         ];
+       $validator = Validator::make($row, $rules);
         $errors = [];
-       foreach ($data as $key => $value){
-           $validator = Validator::make($value,$rules);
-           if ($validator->fails()){
-               dd($validator->errors());
-              $errors[$key]=$validator->errors();
-           }
+       if ($validator->fails()){
+          $errors =$validator->errors()->toArray();
        }
-       return '';
+       return $errors;
+    }
+    public function validateMultiRow(array $rows):array {
+        $errors = [];
+        foreach ($rows as $key => $value) {
+            $error = $this->validate($value);
+            if (!empty($error)) {
+                $errors[$key+2] = $error;
+            }
+        }
+        return $errors;
+    }
+    public function parseWithHeaderFromFile(string $fileName){
 
+        $fileContent = $this->readContent($fileName);
+        if ($fileContent===''){
+            throw new Exception();
+        }else {
+            $parseFile = $this->parseWithHeader($fileContent);
+            return $parseFile;
+        }
     }
 
 }
