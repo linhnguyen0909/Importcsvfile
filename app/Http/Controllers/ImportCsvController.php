@@ -15,8 +15,6 @@ class ImportCsvController extends Controller
 
     public function csvFile()
     {
-//        $fileService = new FileService();
-//        $content = $fileService->read('C:\\Book1.csv');
         $csvFileService = new CsvFileService();
         $parseFile = $csvFileService->parseWithHeaderFromFile('C:\Users\Admin\Desktop\Book_null.csv');
         $validateParseFile = $csvFileService->validateMultiRow($parseFile);
