@@ -3,17 +3,21 @@
 
 namespace App\Services;
 
-
+use App\Services\Abstracts\ParseFile;
 use Exception;
 use Illuminate\Support\Facades\Validator;
-use function PHPUnit\Framework\throwException;
 
 /**
  * Class CsvFileService
  * @package App\Services
  */
-class CsvFileService extends FileService
+class CsvFileService extends ParseFile
 {
+    private $fileService;
+    public function __construct(FileService $fileService)
+    {
+        $this->fileService = $fileService;
+    }
     /**
      * @param  string  $data
      * @return array
@@ -50,53 +54,13 @@ class CsvFileService extends FileService
     }
 
     /**
-     * @param  array  $row
-     * @return array
-     */
-    public function validate(array $row): array
-    {
-        $rules = [
-            'name' => 'required|min:4|max:50',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8',
-            'phone' => 'nullable|string|regex:/(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/'
-        ];
-        $validator = Validator::make($row, $rules);
-        $errors = [];
-        if ($validator->fails()) {
-            $errors = $validator->errors()->toArray();
-        }
-        return $errors;
-    }
-
-    /**
-     * @param  array  $rows
-     * @return array
-     */
-    public function validateMultiRow(array $rows): array
-    {
-        $errors = [];
-        foreach ($rows as $key => $value) {
-            $error = $this->validate($value);
-            if (!empty($error)) {
-                $errors[] = [
-                    'line' => $key + 2,
-                    'errors' => $error,
-                ];
-            }
-        }
-        return $errors;
-    }
-
-    /**
      * @param  string  $fileName
      * @return array
      * @throws Exception
      */
-    public function parseWithHeaderFromFile(string $fileName)
+    public function parseWithHeaderFromFile(string $fileName): array
     {
-
-        $fileContent = $this->readContent($fileName);
+        $fileContent = $this->fileService->read($fileName);
         if ($fileContent === '') {
             throw new Exception();
         } else {

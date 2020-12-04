@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\ImportCsvController;
+use App\Http\Controllers\ImportFileController;
+use App\Http\Controllers\ImportExcelController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('files',[ImportCsvController::class,'importCsvFile']);
-Route::get('import-file',[ImportCsvController::class,'csvFile'])->name('import-file');
+Route::get('files',[ImportFileController::class,'importFile']);
+Route::post('import-file',[ImportFileController::class,'import'])->name('file-import');
+Route::get('import-excel',[ImportExcelController::class,'importFileExcel']);
+Route::get('excel',[ImportExcelController::class,'read']);
