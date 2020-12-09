@@ -6,6 +6,7 @@ use App\Http\Requests\ImportFileRequest;
 use App\Models\User;
 use App\Services\DataValidationService;
 use App\Services\FileServiceBuilder;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
@@ -45,13 +46,17 @@ class ImportFileController extends Controller
      */
     public function import(ImportFileRequest $request,DataValidationService $dataValidationService)
     {
-        $file = $request->file('file');
-        // get extention file
-        $fileExtension = $file->getClientOriginalExtension();
+        if($request->hasFile('file')){
+            $file = $request->file('file');
+            $fileExtension = $file->getClientOriginalExtension();
+        }else{
+            $file = $request->get('file_path');
+            $fileExtension = pathinfo($request->file_path,PATHINFO_EXTENSION);
+        }
         $dataFileService = $this->fileServiceBuilder->build($fileExtension);
         $parseFile = $dataFileService->parseWithHeaderFromFile($file);
         $this->actionDataFile($parseFile,$dataValidationService);
-        return redirect()->back();
+        return back()->with('status', 'successfully!');
     }
 
     /**
@@ -67,7 +72,7 @@ class ImportFileController extends Controller
                 $user->save();
             }
         } else {
-            throw new BadRequestException('no import');
+            throw new Exception("ERROR".json_encode($validateParseFile));
         }
     }
 }

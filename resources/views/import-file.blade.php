@@ -21,6 +21,9 @@
                 <input type="file" name="file" class="custom-file-input" id="customFile">
                 <label class="custom-file-label" for="customFile">Choose file</label>
             </div>
+            <div class="custom-file text-left">
+                <input type="text" name="file_path" style="width: inherit" placeholder="enter file path">
+            </div>
         </div>
         <button class="btn btn-primary">Import data</button>
     </form>
