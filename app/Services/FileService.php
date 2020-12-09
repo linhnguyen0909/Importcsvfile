@@ -20,5 +20,4 @@ class FileService
         return file_get_contents($fileName);
     }
 
-
 }

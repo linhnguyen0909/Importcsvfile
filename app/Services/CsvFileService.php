@@ -26,12 +26,11 @@ class CsvFileService extends ParseFile
     {
         // format data before parse
         $data = trim($data);
-        // doc tung dong
+        // read line file data
         foreach (preg_split("/((\r?\n)|(\r\n?))/", $data) as $line) {
-            // tach ra tung cot theo tung dong
+        // get line and row data file
             $content[] = explode(',', $line);;
         }
-        // chuyen array sang key value
         return $content;
     }
 
@@ -62,7 +61,7 @@ class CsvFileService extends ParseFile
     {
         $fileContent = $this->fileService->read($fileName);
         if ($fileContent === '') {
-            throw new Exception();
+            throw new Exception('No file');
         } else {
             $parseFile = $this->parseWithHeader($fileContent);
             return $parseFile;

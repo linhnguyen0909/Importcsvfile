@@ -5,25 +5,74 @@ namespace App\Services;
 
 
 use App\Services\Abstracts\ParseFile;
-use Maatwebsite\Excel\Excel;
-use Rap2hpoutre\FastExcel\Facades\FastExcel;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Writer\Csv;
 
+
+/**
+ * Class ExcelFileService
+ * @package App\Services
+ */
 class ExcelFileService extends ParseFile
 {
+    /**
+     * @var FileService
+     */
+    private $fileService;
 
-    function parse(string $data): array
+    /**
+     * ExcelFileService constructor.
+     * @param  FileService  $fileService
+     */
+    public function __construct(FileService $fileService)
     {
-        // TODO: Implement parseWithHeader() method.
+        $this->fileService = $fileService;
     }
 
+    /**
+     * @param  string  $data
+     * @return array
+     */
+    function parse(string $data): array
+    {   // parse string data to array
+        $filedata = \SimpleXLSX::parseData($data)->rows();
+        return $filedata;
+    }
+
+    /**
+     * @param  string  $content
+     * @return array
+     */
     function parseWithHeader(string $content): array
     {
-        // TODO: Implement parseWithHeader() method.
+        // parse to array
+        $array = $this->parse($content);
+        // get header row
+        $key = array_values(array_shift($array));
+        // transform data with header
+        $attributes = [];
+        foreach ($array as $row) {
+            $attributes[] = array_combine($key, $row);
+        }
+        return $attributes;
     }
 
+    /**
+     * @param  string  $fileName
+     * @return array
+     * @throws Exception
+     */
     function parseWithHeaderFromFile(string $fileName): array
     {
-        dd($fileName);
-        return FastExcel::import($fileName)->toArray();
+        $fileContent = $this->fileService->read($fileName);
+        if ($fileContent === '') {
+            throw new Exception('No file');
+        } else {
+            $parseFile = $this->parseWithHeader($fileContent);
+            return $parseFile;
+        }
     }
 }

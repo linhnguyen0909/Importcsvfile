@@ -5,6 +5,7 @@ namespace App\Services;
 
 
 
+use Exception;
 use Illuminate\Support\Facades\Validator;
 
 class ValidateCsvFile
@@ -18,7 +19,7 @@ class ValidateCsvFile
         ];
         $validator = validator::make($data,$rules);
         if ($validator->failed()){
-            throw \Exception();
+            throw  new Exception();
         }else {
             return $data;
         }

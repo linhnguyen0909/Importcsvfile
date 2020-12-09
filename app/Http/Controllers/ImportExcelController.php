@@ -9,28 +9,15 @@ use Rap2hpoutre\FastExcel\FastExcel;
 
 class ImportExcelController extends Controller
 {
-    public function     importFileExcel()
+    public function importFileExcel()
     {
-        (new FastExcel)->import('C:\Users\Admin\Desktop\Book1.xlsx', function ($line) {
-//            return User::create([
-//                'name' => $line['name'],
-//                'email' => $line['email'],
-//                'password' => $line['password'],
-//                'phone' => $line['phone'],
-//            ]);
-dd($line);
+        (new FastExcel)->import('C:\Users\Admin\Downloads\code501k.csv', function ($line) {
+            User::query()->create($line);
         });
     }
 
     public function read()
     {
-        Excel::load('C:\Users\Admin\Desktop\Book1.xlsx', function ($reader) {
-//            // Getting all results
-//            $results = $reader->get();
-
-            // ->all() is a wrapper for ->get() and will work the same
-            $results = $reader->all();
-            dd($results);
-        });
+        //
     }
 }
