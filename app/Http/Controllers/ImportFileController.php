@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ImportFileRequest;
+use App\Mail\MyEmail;
 use App\Models\User;
 use App\Services\DataValidationService;
 use App\Services\FileServiceBuilder;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 /**
@@ -70,9 +72,14 @@ class ImportFileController extends Controller
                 $user = new User();
                 $user->fill($row);
                 $user->save();
+                $this->sendEmail($row['email']);
             }
         } else {
             throw new Exception("ERROR".json_encode($validateParseFile));
         }
+    }
+    public function sendEmail($request)
+    {
+        Mail::to($request)->send(new MyEmail('123123123'));
     }
 }
