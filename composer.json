@@ -9,11 +9,20 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "ext-json": "*",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "maatwebsite/excel": "^3.1",
+        "phpoffice/phpspreadsheet": "^1.15",
+        "rap2hpoutre/fast-excel": "^2.2",
+        "shuchkin/simplexlsx": "^0.8.19",
+      "ext-dom": "*",
+        "ext-zip": "*",
+        "ext-libxml": "*",
+      "ext-simplexml": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
